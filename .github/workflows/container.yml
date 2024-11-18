@@ -12,7 +12,6 @@ on:
 
 jobs:
   push_to_registry:
-    ##if: github.repository == 'NKI-GCF/rumidup'
     name: Push Docker image to Docker Hub / GitHub Docker Registry
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +26,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: 'nkigcf'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
@@ -43,7 +42,7 @@ jobs:
         with:
           push: true
           tags: |
-            nkigcf/${{ env.REPOTITLE_LOWERCASE }}:dev
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOTITLE_LOWERCASE }}:dev
             ghcr.io/${{ env.REPO_LOWERCASE }}:dev
             
       - name: Push release image
@@ -52,8 +51,8 @@ jobs:
         with:
           push: true
           tags: |
-            nkigcf/${{ env.REPOTITLE_LOWERCASE }}:${{ github.event.release.tag_name }}
-            nkigcf/${{ env.REPOTITLE_LOWERCASE }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOTITLE_LOWERCASE }}:${{ github.event.release.tag_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPOTITLE_LOWERCASE }}:latest
             ghcr.io/${{ env.REPO_LOWERCASE }}:${{ github.event.release.tag_name }}
             ghcr.io/${{ env.REPO_LOWERCASE }}:${{ github.sha }}
             ghcr.io/${{ env.REPO_LOWERCASE }}:latest
